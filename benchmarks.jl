@@ -177,7 +177,7 @@ end
 
 # Run the benchmarks and create the plot
 function main()
-    n_values = [6, 8, 10, 12]
+    n_values = [6, 8, 10, 12, 14]
     
     # Check if benchmarks already exist for this SHA
     existing_file = find_benchmark_by_sha()
