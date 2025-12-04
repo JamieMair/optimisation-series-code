@@ -2,10 +2,35 @@ using BSON
 using CairoMakie
 using Statistics
 using PrettyTables
+using Dates
+
+# Get current git SHA
+function get_git_sha()
+    try
+        sha = strip(read(`git rev-parse --short HEAD`, String))
+        return sha
+    catch
+        return "unknown"
+    end
+end
+
+# Get figure filename based on date and git SHA
+function get_figure_filename(subfolder)
+    date_str = Dates.format(Dates.today(), "yyyy-mm-dd")
+    sha = get_git_sha()
+    figures_dir = joinpath("figures", subfolder)
+    
+    # Create figures directory structure if it doesn't exist
+    if !isdir(figures_dir)
+        mkpath(figures_dir)
+    end
+    
+    return joinpath(figures_dir, "$(date_str)_$(sha).png")
+end
 
 # Load benchmark data from current git SHA
 function load_benchmark_data()
-    sha = strip(read(`git rev-parse --short HEAD`, String))
+    sha = get_git_sha()
     benchmarks_dir = "benchmarks"
     
     # Find file with current SHA
@@ -250,8 +275,9 @@ function main()
     # Create and save plot
     fig = plot_extrapolation(n_values, julia_times, python_times,
                             julia_fit, python_fit, n_extrapolate)
-    save("extrapolation_plot.png", fig)
-    println("\nPlot saved to extrapolation_plot.png")
+    figure_path = get_figure_filename("extrapolation")
+    save(figure_path, fig)
+    println("\nPlot saved to $figure_path")
     
     return fig
 end

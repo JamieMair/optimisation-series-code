@@ -28,6 +28,20 @@ function get_benchmark_filename()
     return joinpath(benchmarks_dir, "$(date_str)_$(sha).bson")
 end
 
+# Get figure filename based on date and git SHA
+function get_figure_filename(subfolder)
+    date_str = Dates.format(Dates.today(), "yyyy-mm-dd")
+    sha = get_git_sha()
+    figures_dir = joinpath("figures", subfolder)
+    
+    # Create figures directory structure if it doesn't exist
+    if !isdir(figures_dir)
+        mkpath(figures_dir)
+    end
+    
+    return joinpath(figures_dir, "$(date_str)_$(sha).png")
+end
+
 # Find existing benchmark file by git SHA
 function find_benchmark_by_sha()
     sha = get_git_sha()
@@ -243,8 +257,9 @@ function main()
     
     # Create and save plot
     fig = plot_benchmark_results(results["n_values"], results)
-    save("benchmark_comparison.png", fig)
-    println("Plot saved to benchmark_comparison.png")
+    figure_path = get_figure_filename("benchmark")
+    save(figure_path, fig)
+    println("Plot saved to $figure_path")
     
     return fig
 end
