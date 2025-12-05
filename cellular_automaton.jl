@@ -56,40 +56,93 @@ function conserved_quantities(u)
     end
     return q
 end
+function conserved_quantities!(q, u)
+    n = length(u)
+    fill!(q, 0)
+    @views for i in 1:n  # update number of conserved quantities
+        window = periodic_windows(u, i)
+        if window == (0, 1, 0)
+            q[i % 2 + 1] += 1
+            q[2 - i % 2] += 1
+        end
+        if window == (0, 1, 1)
+            q[i % 2 + 1] += 1
+        end
+        if window == (1, 1, 1)
+            q[i % 2 + 1] += 1
+        end
+    end
+    return q
+end
+
+function to_int(u)
+    x = 0
+    for i in 1:length(u)
+        x += Int(u[i]) << (i-1)
+    end
+    x
+end
+function from_int(x, n)
+    u = BitVector(undef, n)
+    i = 1
+    while x > 0
+        x, u[i] = fldmod(x, 2)
+        i += 1
+    end
+    u
+end
+function from_int!(u::BitVector, x)
+    i = 1
+    while x > 0
+        x, u[i] = fldmod(x, 2)
+        i += 1
+    end
+    u
+end
 
 function numerics(n)
     s = [Dict{Int, Int}() for _ in 0:(Int(n ÷ 2)),  _ in 0:(Int(n ÷ 2))]  # list to store data
-    c = Set{BitVector}(BitVector((i...,)) for i in product(((0, 1) for _ in 1:n)...))  # set of all configurations
     
-
+    
     u = BitVector(undef, n)
     u′ = similar(u)
 
-    while length(c) > 0
-        d = first(c)
-        q = conserved_quantities(d)  # initial number of conserved quantities
-        
+    has_visited = BitVector(undef, 2^n)
+    fill!(has_visited, false)
+
+    u = BitVector(undef, n)
+    u′ = similar(u)
+    q = [0, 0]
+    for i in 0:(2^n-1)
+        if has_visited[i+1]
+            continue
+        else
+            has_visited[i+1] = true
+        end
+
+        from_int!(u, i)
+        conserved_quantities!(q, u)
+
         orbit_length = 1
-        u .= d # set u to initial state
-        
-        while true # generate orbit
-            delete!(c, u) # count configuration as visited
+        while true
             update_odd!(u′, u)
             update_even!(u, u′)
-            if u == d # found initial state
+            next_config = to_int(u)
+            has_visited[next_config+1] = true
+            if next_config == i
                 break
             end
             orbit_length += 1
         end
-        l = orbit_length # length of orbit
 
         correct_dict = s[q[1]+1,q[2]+1]
-        if haskey(correct_dict, l)  # update list to store new data
-            correct_dict[l] += l
+        if haskey(correct_dict, orbit_length)  # update list to store new data
+            correct_dict[orbit_length] += orbit_length
         else
-            correct_dict[l] = l
+            correct_dict[orbit_length] = orbit_length
         end
     end
+
     return s
 end
 
