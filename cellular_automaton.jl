@@ -168,8 +168,12 @@ function from_int!(u::BitVector, x)
     u
 end
 
-function _numerics!(s, n, val_n::Val)
+function _numerics!(s, has_visited, n, val_n::Val)
     for i in 0:(2^n-1)
+        if has_visited[i+1]
+            continue
+        end
+
         qa, qb = conserved_quantities(i, val_n)
 
         u = i
@@ -177,6 +181,7 @@ function _numerics!(s, n, val_n::Val)
         orbit_length = 1
         while true
             u = update(u, val_n)
+            has_visited[u+1] = true
             if u == i # found cycle
                 break
             end
@@ -185,9 +190,9 @@ function _numerics!(s, n, val_n::Val)
 
         correct_dict = s[qa+1,qb+1]
         if haskey(correct_dict, orbit_length)  # update list to store new data
-            correct_dict[orbit_length] += 1
+            correct_dict[orbit_length] += orbit_length
         else
-            correct_dict[orbit_length] = 1
+            correct_dict[orbit_length] = orbit_length
         end
     end
     nothing
@@ -195,8 +200,12 @@ end
 
 function numerics(n)
     s = [Dict{Int, Int}() for _ in 0:(Int(n ÷ 2)),  _ in 0:(Int(n ÷ 2))]  # list to store data
+    
 
-    _numerics!(s, n, Val(n))
+    has_visited = BitVector(undef, 2^n)
+    fill!(has_visited, false)
+
+    _numerics!(s, has_visited, n, Val(n))
 
     return s
 end
