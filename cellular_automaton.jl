@@ -225,3 +225,16 @@ function check_agrees(n)
 
     println("[Test Passed]")
 end
+function check_analytics(n, jul_result = numerics(n))
+    py_result = py_analytics(n÷2)
+    
+
+    for (a, b) in zip(py_result, jul_result)
+        for (bkey, bval) in b 
+            @assert haskey(a, bkey)
+            @assert a[bkey] == bval
+        end
+    end
+
+    println("[Test Passed]")
+end
