@@ -4,14 +4,14 @@ using Test
 include("original_python.jl")
 
 # Update odd sites (i % 2 == 1)
-update_odd(u, n) = Tuple(i % 2 == 1 && (1 - (1 - u[mod1(i-1, n)]) * (1 - u[mod1(i+1, n)])) != 0 ? 1 - u[i] : u[i] for i in 1:n)
+update_odd(u, n) = Tuple(i % 2 == 1 && (1 - (1 - u[mod1(i-1, n)]) * (1 - u[mod1(i+1, n)])) != 0 ? !u[i] : u[i] for i in 1:n)
 # Update even sites (i % 2 == 0)
-update_even(u, n) = Tuple(i % 2 == 0 && (1 - (1 - u[mod1(i-1, n)]) * (1 - u[mod1(i+1, n)])) != 0 ? 1 - u[i] : u[i] for i in 1:n)
+update_even(u, n) = Tuple(i % 2 == 0 && (1 - (1 - u[mod1(i-1, n)]) * (1 - u[mod1(i+1, n)])) != 0 ? !u[i] : u[i] for i in 1:n)
 function numerics(n)
     s = [Dict{Int, Int}() for _ in 0:(Int(n ÷ 2)),  _ in 0:(Int(n ÷ 2))]  # list to store data
-    c = Set([i for i in product(((0, 1) for _ in 1:n)...)])  # set of all configurations
-    m = length(c)  # initial number of configurations
-    while m > 0
+    c = Set([NTuple{n, Bool}((i...,)) for i in product(((0, 1) for _ in 1:n)...)])  # set of all configurations
+    
+    while length(c) > 0
         q = [0, 0]  # initial number of conserved quantities
         d = first(c)
         b = (d..., d[1:3]...)  # temporarily extend configuration; due to periodicity
@@ -27,25 +27,27 @@ function numerics(n)
                 q[i % 2 + 1] += 1
             end
         end
-        t = [d]  # initial configuration in orbit
+        
+        orbit_length = 1
+        u = d
+        
         while true # generate orbit
-            u = t[end]
+            delete!(c, u)
             u = update_odd(u, n)
             u = update_even(u, n)
-            if u == t[1]
+            if u == d # found initial state
                 break
             end
-            push!(t, u)
+            orbit_length += 1
         end
-        l = length(t)  # length of orbit
+        l = orbit_length # length of orbit
+
         correct_dict = s[q[1]+1,q[2]+1]
         if haskey(correct_dict, l)  # update list to store new data
             correct_dict[l] += l
         else
             correct_dict[l] = l
         end
-        setdiff!(c, t)
-        m = length(c)
     end
     return s
 end
