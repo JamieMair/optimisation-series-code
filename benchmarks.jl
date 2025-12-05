@@ -5,8 +5,63 @@ using Dates
 include("cellular_automaton.jl")
 include("utils.jl")
 
+"""
+    find_existing_python_benchmarks(n_values)
+
+Search existing BSON files for Python benchmark results that match the requested n values.
+Returns the complete set of Python timings if a matching set is found, or nothing otherwise.
+This ensures consistency by using a complete set rather than mixing results from different runs.
+
+# Arguments
+- `n_values`: Array of n values to benchmark
+
+# Returns
+- Tuple of (n_values, py_numerics_results) if found, or (nothing, nothing) otherwise
+"""
+function find_existing_python_benchmarks(n_values)
+    benchmarks_dir = "benchmarks"
+    
+    if !isdir(benchmarks_dir)
+        return nothing, nothing
+    end
+    
+    # Sort requested n_values for comparison
+    sorted_n_values = sort(n_values)
+    
+    # Search through all BSON files
+    for file in readdir(benchmarks_dir)
+        if endswith(file, ".bson")
+            try
+                filepath = joinpath(benchmarks_dir, file)
+                data = BSON.load(filepath)
+                
+                if haskey(data, :results)
+                    results = data[:results]
+                    existing_n = sort(results["n_values"])
+                    
+                    # Check if this file has all the n values we need
+                    if all(n in existing_n for n in sorted_n_values)
+                        # Extract the matching subset
+                        indices = [findfirst(==(n), results["n_values"]) for n in n_values]
+                        py_timings = [results["py_numerics"][i] for i in indices]
+                        
+                        println("Found existing Python benchmarks in: $file")
+                        println("  Reusing Python results for n = $n_values")
+                        return n_values, py_timings
+                    end
+                end
+            catch e
+                # Skip files that can't be loaded
+                continue
+            end
+        end
+    end
+    
+    return nothing, nothing
+end
+
 # Run benchmarks for different problem sizes
-function run_benchmark_comparison(n_values, existing_results=nothing, existing_n_values=Int[])
+function run_benchmark_comparison(n_values, existing_results=nothing, existing_n_values=Int[], existing_python_results=nothing)
     # Initialize results structure
     if existing_results === nothing
         results = Dict(
@@ -37,11 +92,26 @@ function run_benchmark_comparison(n_values, existing_results=nothing, existing_n
         times_ms = jul_bench.times ./ 1e6  # Convert to ms, keep all samples
         println("$(minimum(jul_bench.times) / 1e6) ms (min of $(length(jul_bench.times)) samples)")
         
-        # Benchmark Python implementation
-        print("  Python py_numerics... ")
-        py_bench = @benchmark py_numerics($n) samples=50 seconds=60
-        py_times_ms = py_bench.times ./ 1e6  # Convert to ms, keep all samples
-        println("$(minimum(py_bench.times) / 1e6) ms (min of $(length(py_bench.times)) samples)")
+        # Use existing Python results if available, otherwise benchmark
+        if existing_python_results !== nothing
+            idx = findfirst(==(n), n_values)
+            if idx !== nothing && idx <= length(existing_python_results)
+                py_times_ms = existing_python_results[idx]
+                println("  Python py_numerics... using cached results (min = $(minimum(py_times_ms)) ms)")
+            else
+                # Fallback to benchmarking if index not found
+                print("  Python py_numerics... ")
+                py_bench = @benchmark py_numerics($n) samples=50 seconds=60
+                py_times_ms = py_bench.times ./ 1e6
+                println("$(minimum(py_bench.times) / 1e6) ms (min of $(length(py_bench.times)) samples)")
+            end
+        else
+            # Benchmark Python implementation
+            print("  Python py_numerics... ")
+            py_bench = @benchmark py_numerics($n) samples=50 seconds=60
+            py_times_ms = py_bench.times ./ 1e6  # Convert to ms, keep all samples
+            println("$(minimum(py_bench.times) / 1e6) ms (min of $(length(py_bench.times)) samples)")
+        end
         
         # Append to results
         push!(results["n_values"], n)
@@ -153,8 +223,11 @@ function run_benchmarks(n_values = [6, 8, 10, 12, 14])
         println("No existing benchmarks found for current git SHA.")
     end
     
+    # Check for existing Python benchmark results (they shouldn't change)
+    existing_python_n, existing_python_timings = find_existing_python_benchmarks(n_values)
+    
     # Run benchmarks (only for new n values)
-    results = run_benchmark_comparison(n_values, existing_results, existing_n_values)
+    results = run_benchmark_comparison(n_values, existing_results, existing_n_values, existing_python_timings)
     
     # Sort results by n_values
     sorted_indices = sortperm(results["n_values"])
