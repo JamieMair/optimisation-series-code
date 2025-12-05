@@ -134,8 +134,7 @@ function plot_benchmark_results(n_values, results)
 end
 
 # Run the benchmarks and create the plot
-function run_benchmarks()
-    n_values = [6, 8, 10, 12, 14]
+function run_benchmarks(n_values = [6, 8, 10, 12, 14])
     
     # Check if benchmarks already exist for this SHA
     existing_file = find_benchmark_by_sha()
