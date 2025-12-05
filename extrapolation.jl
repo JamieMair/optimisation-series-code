@@ -3,30 +3,7 @@ using CairoMakie
 using Statistics
 using PrettyTables
 using Dates
-
-# Get current git SHA
-function get_git_sha()
-    try
-        sha = strip(read(`git rev-parse --short HEAD`, String))
-        return sha
-    catch
-        return "unknown"
-    end
-end
-
-# Get figure filename based on date and git SHA
-function get_figure_filename(subfolder)
-    date_str = Dates.format(Dates.today(), "yyyy-mm-dd")
-    sha = get_git_sha()
-    figures_dir = joinpath("figures", subfolder)
-    
-    # Create figures directory structure if it doesn't exist
-    if !isdir(figures_dir)
-        mkpath(figures_dir)
-    end
-    
-    return joinpath(figures_dir, "$(date_str)_$(sha).png")
-end
+include("utils.jl")
 
 # Load benchmark data from current git SHA
 function load_benchmark_data()
@@ -84,7 +61,7 @@ function r_squared(x, y, a, b)
 end
 
 # Fit log(time) vs n and extrapolate
-function fit_and_extrapolate(n_values, times_ms, label)
+function fit_and_extrapolate_model(n_values, times_ms, label)
     # Convert to log scale for times
     log_times = log.(times_ms)
     n_float = Float64.(n_values)
@@ -125,8 +102,8 @@ function extrapolate_times(a, b, n_extrapolate)
     return [exp(a + b * n) for n in n_extrapolate]
 end
 
-# Create visualization
-function plot_extrapolation(n_values, julia_times, python_times, 
+# Create visualisation
+function plot_extrapolation_results(n_values, julia_times, python_times, 
                            julia_fit, python_fit, n_extrapolate)
     fig = Figure(size=(1400, 600))
     
@@ -197,23 +174,6 @@ function plot_extrapolation(n_values, julia_times, python_times,
     return fig
 end
 
-# Format time in human-friendly units
-function format_time(time_ms)
-    if time_ms < 1000
-        return string(round(time_ms, digits=2), " ms")
-    elseif time_ms < 60_000  # < 60 seconds
-        return string(round(time_ms / 1000, digits=2), " sec")
-    elseif time_ms < 6_000_000  # < 100 minutes
-        return string(round(time_ms / 60_000, digits=2), " min")
-    elseif time_ms < 86_400_000  # < 24 hours (in ms)
-        return string(round(time_ms / 3_600_000, digits=2), " hr")
-    elseif time_ms < 31_536_000_000  # < 365 days (in ms)
-        return string(round(time_ms / 86_400_000, digits=2), " days")
-    else
-        return string(round(time_ms / 31_536_000_000, digits=2), " yr")
-    end
-end
-
 # Print extrapolated times in a table
 function print_extrapolation_table(n_extrapolate, julia_extrap, python_extrap)
     # Prepare data for the table
@@ -242,7 +202,7 @@ function print_extrapolation_table(n_extrapolate, julia_extrap, python_extrap)
 end
 
 # Main function
-function main()
+function run_extrapolation()
     # Load benchmark data
     results = load_benchmark_data()
     
@@ -254,8 +214,8 @@ function main()
     println("Python min times (ms): $python_times")
     
     # Fit exponential models: time = exp(a + b*n)
-    julia_fit = fit_and_extrapolate(n_values, julia_times, "Julia")
-    python_fit = fit_and_extrapolate(n_values, python_times, "Python")
+    julia_fit = fit_and_extrapolate_model(n_values, julia_times, "Julia")
+    python_fit = fit_and_extrapolate_model(n_values, python_times, "Python")
     
     # Print fit results
     print_fit_results([julia_fit, python_fit])
@@ -273,8 +233,8 @@ function main()
     print_extrapolation_table(n_extrapolate, julia_extrap, python_extrap)
     
     # Create and save plot
-    fig = plot_extrapolation(n_values, julia_times, python_times,
-                            julia_fit, python_fit, n_extrapolate)
+    fig = plot_extrapolation_results(n_values, julia_times, python_times,
+                                      julia_fit, python_fit, n_extrapolate)
     figure_path = get_figure_filename("extrapolation")
     save(figure_path, fig)
     println("\nPlot saved to $figure_path")
@@ -284,5 +244,5 @@ end
 
 # Run if executed as main script
 if abspath(PROGRAM_FILE) == @__FILE__
-    main()
+    run_extrapolation()
 end

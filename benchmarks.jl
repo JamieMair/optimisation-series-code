@@ -2,67 +2,11 @@ using BenchmarkTools
 using CairoMakie
 using BSON
 using Dates
-include("main.jl")
-
-# Get current git SHA
-function get_git_sha()
-    try
-        sha = strip(read(`git rev-parse --short HEAD`, String))
-        return sha
-    catch
-        return "unknown"
-    end
-end
-
-# Get benchmark filename based on date and git SHA
-function get_benchmark_filename()
-    date_str = Dates.format(Dates.today(), "yyyy-mm-dd")
-    sha = get_git_sha()
-    benchmarks_dir = "benchmarks"
-    
-    # Create benchmarks directory if it doesn't exist
-    if !isdir(benchmarks_dir)
-        mkdir(benchmarks_dir)
-    end
-    
-    return joinpath(benchmarks_dir, "$(date_str)_$(sha).bson")
-end
-
-# Get figure filename based on date and git SHA
-function get_figure_filename(subfolder)
-    date_str = Dates.format(Dates.today(), "yyyy-mm-dd")
-    sha = get_git_sha()
-    figures_dir = joinpath("figures", subfolder)
-    
-    # Create figures directory structure if it doesn't exist
-    if !isdir(figures_dir)
-        mkpath(figures_dir)
-    end
-    
-    return joinpath(figures_dir, "$(date_str)_$(sha).png")
-end
-
-# Find existing benchmark file by git SHA
-function find_benchmark_by_sha()
-    sha = get_git_sha()
-    benchmarks_dir = "benchmarks"
-    
-    if !isdir(benchmarks_dir)
-        return nothing
-    end
-    
-    # Look for any file with this SHA
-    for file in readdir(benchmarks_dir)
-        if endswith(file, "_$(sha).bson")
-            return joinpath(benchmarks_dir, file)
-        end
-    end
-    
-    return nothing
-end
+include("cellular_automaton.jl")
+include("utils.jl")
 
 # Run benchmarks for different problem sizes
-function benchmark_comparison(n_values, existing_results=nothing, existing_n_values=Int[])
+function run_benchmark_comparison(n_values, existing_results=nothing, existing_n_values=Int[])
     # Initialize results structure
     if existing_results === nothing
         results = Dict(
@@ -190,7 +134,7 @@ function plot_benchmark_results(n_values, results)
 end
 
 # Run the benchmarks and create the plot
-function main()
+function run_benchmarks()
     n_values = [6, 8, 10, 12, 14]
     
     # Check if benchmarks already exist for this SHA
@@ -211,7 +155,7 @@ function main()
     end
     
     # Run benchmarks (only for new n values)
-    results = benchmark_comparison(n_values, existing_results, existing_n_values)
+    results = run_benchmark_comparison(n_values, existing_results, existing_n_values)
     
     # Sort results by n_values
     sorted_indices = sortperm(results["n_values"])
@@ -266,5 +210,5 @@ end
 
 # Run if executed as main script
 if abspath(PROGRAM_FILE) == @__FILE__
-    main()
+    run_benchmarks()
 end
