@@ -6,8 +6,7 @@ using Dates
 include("utils.jl")
 
 # Load benchmark data from current git SHA
-function load_benchmark_data()
-    sha = get_git_sha()
+function load_benchmark_data(sha = get_git_sha())
     benchmarks_dir = "benchmarks"
     
     # Find file with current SHA
@@ -202,9 +201,9 @@ function print_extrapolation_table(n_extrapolate, julia_extrap, python_extrap)
 end
 
 # Main function
-function run_extrapolation()
+function run_extrapolation(sha = get_git_sha())
     # Load benchmark data
-    results = load_benchmark_data()
+    results = load_benchmark_data(sha)
     
     # Extract minimum times
     n_values, julia_times, python_times = extract_min_times(results)
