@@ -1,0 +1,259 @@
+# Elementary Cellular Automaton Rule Formulas
+# Generated using optimised Node-based computation tree
+
+Rule 0: xor(l, l)
+Rule 1: ~((l | c) | r)
+Rule 2: (~(l | c) & r)
+Rule 3: ~(l | c)
+Rule 4: (~(l | r) & c)
+Rule 5: ~(l | r)
+Rule 6: (xor(c, r) & ~(l))
+Rule 7: ~((c & r) | l)
+Rule 8: ((c & r) & ~(l))
+Rule 9: ~(xor(c, r) | l)
+Rule 10: (~(l) & r)
+Rule 11: NO SOLUTION FOUND
+Rule 12: (~(l) & c)
+Rule 13: NO SOLUTION FOUND
+Rule 14: ~(~(c | r) | l)
+Rule 15: ~(l)
+Rule 16: (~(c | r) & l)
+Rule 17: ~(c | r)
+Rule 18: (xor(l, r) & ~(c))
+Rule 19: ~((l & r) | c)
+Rule 20: (xor(l, c) & ~(r))
+Rule 21: ~((l & c) | r)
+Rule 22: NO SOLUTION FOUND
+Rule 23: NO SOLUTION FOUND
+Rule 24: (xor(l, c) & xor(l, r))
+Rule 25: ~(xor(c, r) | (l & c))
+Rule 26: NO SOLUTION FOUND
+Rule 27: NO SOLUTION FOUND
+Rule 28: NO SOLUTION FOUND
+Rule 29: NO SOLUTION FOUND
+Rule 30: xor((c | r), l)
+Rule 31: (~(l) | ~(c | r))
+Rule 32: ((l & r) & ~(c))
+Rule 33: ~(xor(l, r) | c)
+Rule 34: (~(c) & r)
+Rule 35: NO SOLUTION FOUND
+Rule 36: (xor(l, c) & xor(c, r))
+Rule 37: ~(xor(l, r) | (l & c))
+Rule 38: NO SOLUTION FOUND
+Rule 39: NO SOLUTION FOUND
+Rule 40: (xor(l, c) & r)
+Rule 41: NO SOLUTION FOUND
+Rule 42: ~((l & c) | ~(r))
+Rule 43: NO SOLUTION FOUND
+Rule 44: (xor(l, c) & (c | r))
+Rule 45: xor(xor(l, c), ~(c | r))
+Rule 46: xor((c | r), (l & c))
+Rule 47: NO SOLUTION FOUND
+Rule 48: (~(c) & l)
+Rule 49: NO SOLUTION FOUND
+Rule 50: ~(~(l | r) | c)
+Rule 51: ~(c)
+Rule 52: NO SOLUTION FOUND
+Rule 53: NO SOLUTION FOUND
+Rule 54: xor((l | r), c)
+Rule 55: (~(c) | ~(l | r))
+Rule 56: (xor(l, c) & (l | r))
+Rule 57: xor(xor(l, c), ~(l | r))
+Rule 58: xor((l | r), (l & c))
+Rule 59: NO SOLUTION FOUND
+Rule 60: xor(l, c)
+Rule 61: (xor(l, c) | ~(l | r))
+Rule 62: NO SOLUTION FOUND
+Rule 63: ~((l & c))
+Rule 64: ((l & c) & ~(r))
+Rule 65: ~(xor(l, c) | r)
+Rule 66: (xor(l, r) & xor(c, r))
+Rule 67: ~(xor(l, c) | (l & r))
+Rule 68: (~(r) & c)
+Rule 69: NO SOLUTION FOUND
+Rule 70: NO SOLUTION FOUND
+Rule 71: NO SOLUTION FOUND
+Rule 72: (xor(l, r) & c)
+Rule 73: NO SOLUTION FOUND
+Rule 74: (xor(l, r) & (c | r))
+Rule 75: xor(xor(l, r), ~(c | r))
+Rule 76: ~((l & r) | ~(c))
+Rule 77: NO SOLUTION FOUND
+Rule 78: xor((c | r), (l & r))
+Rule 79: NO SOLUTION FOUND
+Rule 80: (~(r) & l)
+Rule 81: NO SOLUTION FOUND
+Rule 82: NO SOLUTION FOUND
+Rule 83: NO SOLUTION FOUND
+Rule 84: ~(~(l | c) | r)
+Rule 85: ~(r)
+Rule 86: xor((l | c), r)
+Rule 87: (~(r) | ~(l | c))
+Rule 88: (xor(l, r) & (l | c))
+Rule 89: xor(xor(l, r), ~(l | c))
+Rule 90: xor(l, r)
+Rule 91: (xor(l, r) | ~(l | c))
+Rule 92: xor((l | c), (l & r))
+Rule 93: NO SOLUTION FOUND
+Rule 94: NO SOLUTION FOUND
+Rule 95: ~((l & r))
+Rule 96: (xor(c, r) & l)
+Rule 97: NO SOLUTION FOUND
+Rule 98: (xor(c, r) & (l | r))
+Rule 99: xor(xor(c, r), ~(l | r))
+Rule 100: (xor(c, r) & (l | c))
+Rule 101: xor(xor(c, r), ~(l | c))
+Rule 102: xor(c, r)
+Rule 103: (xor(c, r) | ~(l | c))
+Rule 104: NO SOLUTION FOUND
+Rule 105: xor(xor(l, c), ~(r))
+Rule 106: xor((l & c), r)
+Rule 107: NO SOLUTION FOUND
+Rule 108: xor((l & r), c)
+Rule 109: NO SOLUTION FOUND
+Rule 110: NO SOLUTION FOUND
+Rule 111: (xor(c, r) | ~(l))
+Rule 112: ~((c & r) | ~(l))
+Rule 113: NO SOLUTION FOUND
+Rule 114: xor((l | r), (c & r))
+Rule 115: NO SOLUTION FOUND
+Rule 116: xor((l | c), (c & r))
+Rule 117: NO SOLUTION FOUND
+Rule 118: NO SOLUTION FOUND
+Rule 119: ~((c & r))
+Rule 120: xor((c & r), l)
+Rule 121: NO SOLUTION FOUND
+Rule 122: NO SOLUTION FOUND
+Rule 123: (xor(l, r) | ~(c))
+Rule 124: NO SOLUTION FOUND
+Rule 125: (xor(l, c) | ~(r))
+Rule 126: (xor(l, c) | xor(l, r))
+Rule 127: NO SOLUTION FOUND
+Rule 128: ((l & c) & r)
+Rule 129: ~(xor(l, c) | xor(l, r))
+Rule 130: ~(xor(l, c) | ~(r))
+Rule 131: NO SOLUTION FOUND
+Rule 132: ~(xor(l, r) | ~(c))
+Rule 133: NO SOLUTION FOUND
+Rule 134: NO SOLUTION FOUND
+Rule 135: xor((c & r), ~(l))
+Rule 136: (c & r)
+Rule 137: NO SOLUTION FOUND
+Rule 138: NO SOLUTION FOUND
+Rule 139: ((c & r) | ~(l | c))
+Rule 140: NO SOLUTION FOUND
+Rule 141: ((c & r) | ~(l | r))
+Rule 142: NO SOLUTION FOUND
+Rule 143: ((c & r) | ~(l))
+Rule 144: ~(xor(c, r) | ~(l))
+Rule 145: NO SOLUTION FOUND
+Rule 146: NO SOLUTION FOUND
+Rule 147: xor((l & r), ~(c))
+Rule 148: NO SOLUTION FOUND
+Rule 149: xor((l & c), ~(r))
+Rule 150: xor(xor(l, c), r)
+Rule 151: NO SOLUTION FOUND
+Rule 152: ~(xor(c, r) | ~(l | c))
+Rule 153: xor(~(c), r)
+Rule 154: xor(xor(l, r), (l & c))
+Rule 155: NO SOLUTION FOUND
+Rule 156: xor(xor(l, c), (l & r))
+Rule 157: NO SOLUTION FOUND
+Rule 158: NO SOLUTION FOUND
+Rule 159: NO SOLUTION FOUND
+Rule 160: (l & r)
+Rule 161: NO SOLUTION FOUND
+Rule 162: NO SOLUTION FOUND
+Rule 163: ((l & r) | ~(l | c))
+Rule 164: ~(xor(l, r) | ~(l | c))
+Rule 165: xor(~(l), r)
+Rule 166: xor(xor(l, r), (l | c))
+Rule 167: NO SOLUTION FOUND
+Rule 168: ((l | c) & r)
+Rule 169: xor(~(l | c), r)
+Rule 170: (r | r)
+Rule 171: (~(l | c) | r)
+Rule 172: NO SOLUTION FOUND
+Rule 173: NO SOLUTION FOUND
+Rule 174: NO SOLUTION FOUND
+Rule 175: (~(l) | r)
+Rule 176: NO SOLUTION FOUND
+Rule 177: ((l & r) | ~(c | r))
+Rule 178: NO SOLUTION FOUND
+Rule 179: ((l & r) | ~(c))
+Rule 180: xor(xor(l, c), (c & r))
+Rule 181: NO SOLUTION FOUND
+Rule 182: NO SOLUTION FOUND
+Rule 183: NO SOLUTION FOUND
+Rule 184: NO SOLUTION FOUND
+Rule 185: NO SOLUTION FOUND
+Rule 186: NO SOLUTION FOUND
+Rule 187: (~(c) | r)
+Rule 188: (xor(l, c) | (l & r))
+Rule 189: NO SOLUTION FOUND
+Rule 190: (xor(l, c) | r)
+Rule 191: NO SOLUTION FOUND
+Rule 192: (l & c)
+Rule 193: NO SOLUTION FOUND
+Rule 194: ~(xor(l, c) | ~(l | r))
+Rule 195: xor(~(l), c)
+Rule 196: NO SOLUTION FOUND
+Rule 197: ((l & c) | ~(l | r))
+Rule 198: xor(xor(l, c), (l | r))
+Rule 199: NO SOLUTION FOUND
+Rule 200: ((l | r) & c)
+Rule 201: xor(~(l | r), c)
+Rule 202: NO SOLUTION FOUND
+Rule 203: NO SOLUTION FOUND
+Rule 204: (c | c)
+Rule 205: (~(l | r) | c)
+Rule 206: NO SOLUTION FOUND
+Rule 207: (~(l) | c)
+Rule 208: NO SOLUTION FOUND
+Rule 209: ((l & c) | ~(c | r))
+Rule 210: xor(xor(l, c), (c | r))
+Rule 211: NO SOLUTION FOUND
+Rule 212: NO SOLUTION FOUND
+Rule 213: ((l & c) | ~(r))
+Rule 214: NO SOLUTION FOUND
+Rule 215: NO SOLUTION FOUND
+Rule 216: NO SOLUTION FOUND
+Rule 217: NO SOLUTION FOUND
+Rule 218: (xor(l, r) | (l & c))
+Rule 219: NO SOLUTION FOUND
+Rule 220: NO SOLUTION FOUND
+Rule 221: (~(r) | c)
+Rule 222: (xor(l, r) | c)
+Rule 223: NO SOLUTION FOUND
+Rule 224: ((c | r) & l)
+Rule 225: xor(~(c | r), l)
+Rule 226: NO SOLUTION FOUND
+Rule 227: NO SOLUTION FOUND
+Rule 228: NO SOLUTION FOUND
+Rule 229: NO SOLUTION FOUND
+Rule 230: (xor(c, r) | (l & c))
+Rule 231: NO SOLUTION FOUND
+Rule 232: NO SOLUTION FOUND
+Rule 233: NO SOLUTION FOUND
+Rule 234: ((l & c) | r)
+Rule 235: xor((l | r), ~(c | r))
+Rule 236: ((l & r) | c)
+Rule 237: xor((l | c), ~(c | r))
+Rule 238: (c | r)
+Rule 239: ((c | r) | ~(l))
+Rule 240: (l | l)
+Rule 241: (~(c | r) | l)
+Rule 242: NO SOLUTION FOUND
+Rule 243: (~(c) | l)
+Rule 244: NO SOLUTION FOUND
+Rule 245: (~(r) | l)
+Rule 246: (xor(c, r) | l)
+Rule 247: NO SOLUTION FOUND
+Rule 248: ((c & r) | l)
+Rule 249: xor((l | c), ~(l | r))
+Rule 250: (l | r)
+Rule 251: ((l | r) | ~(c))
+Rule 252: (l | c)
+Rule 253: ((l | c) | ~(r))
+Rule 254: ((l | c) | r)
+Rule 255: (~(l) | l)
